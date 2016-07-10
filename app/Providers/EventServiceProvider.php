@@ -28,6 +28,22 @@ class EventServiceProvider extends ServiceProvider
     {
         parent::boot($events);
 
-        //
+        $events->listen('tymon.jwt.absent', function () {
+
+            return response()->json([
+                'code' => 400,
+                'error' => "Please supply user token."
+            ], 400);
+
+        });
+
+        $events->listen('tymon.jwt.invalid', function () {
+
+            return response()->json([
+                'code' => 400,
+                'error' => "The supplied token is invalid. Please supply a correct Token."
+            ], 400);
+
+        });
     }
 }

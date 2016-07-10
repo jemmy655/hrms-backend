@@ -4,3 +4,8 @@
 Homestead.yaml
 Homestead.json
 .env
+.env.example
+.gitattributes
+composer.lock
+.idea
+.vagrant/machines/default/virtualbox

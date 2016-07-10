@@ -14,3 +14,13 @@
 Route::get('/', function () {
     return view('index');
 });
+
+
+Route::group(['prefix' => 'api/v1'], function () {
+    Route::post('users/login', 'UserController@authenticate');
+    Route::post('users/forgot-password', 'Auth\PasswordController@sendResetLinkEmail');
+    Route::post('users/reset-password', 'Auth\PasswordController@reset');
+    Route::resource('users', 'UserController', ['except' => [
+        'create', 'edit', 'destroy'
+    ]]);
+});
