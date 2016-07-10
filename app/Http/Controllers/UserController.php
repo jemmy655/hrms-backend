@@ -42,10 +42,32 @@ class UserController extends HrmsController
         ]]);
     }
 
+    /**
+     * @param $type
+     * @param $data
+     * @param null $paginator
+     * @return array
+     */
+    private function transform($type, $data, $paginator=null) {
+
+        if ($type == "Item"){
+            $resource = new Item($data, $this->userTransformer);
+        } elseif ($type == "Collection"){
+            $resource = new Collection($data, $this->userTransformer);
+            $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
+        }
+
+        return $this->fractal->createData(
+            $resource
+        )->toArray();
+
+    }
+
 
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -55,12 +77,7 @@ class UserController extends HrmsController
         $users = $paginator->getCollection();
 
         $paginator->appends(array_diff_key($request->all(), array_flip(['page'])));
-        $resource = new Collection($users, $this->userTransformer);
-        $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
-
-        $data = $this->fractal->createData(
-            $resource
-        )->toArray();
+        $data = $this->transform("Collection", $users, $paginator);
 
         return $this->respondWithSuccess($data);
     }
@@ -73,6 +90,28 @@ class UserController extends HrmsController
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        if($validator->fails()){
+
+            return $this->setStatusCode(400)->respondWithError($validator->errors());
+
+        } else {
+
+            $user = User::create([
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'password' => bcrypt($request->get('password')),
+            ]);
+
+            $data = $this->transform("Item", $user);
+
+            return $this->respondWithSuccess($data, "User created successfully.");
+        }
 
     }
 
@@ -90,10 +129,7 @@ class UserController extends HrmsController
             return $this->setStatusCode(404)->respondWithError(['User does not Exist']);
         }
 
-        $resource = new Item($user, $this->userTransformer);
-        $data = $this->fractal->createData(
-            $resource
-        )->toArray();
+        $data = $this->transform("Item", $user);
 
         return $this->respondWithSuccess($data);
     }

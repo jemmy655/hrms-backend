@@ -41,22 +41,26 @@ class HrmsController extends Controller
 
     /**
      * @param $err
+     * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    public function respondWithError($err){
+    public function respondWithError($err, $message = "Error Occurred"){
         return $this->respond([
             'code' => $this->getStatusCode(),
+            'message' => $message,
             'error' => $err
         ]);
     }
 
     /**
      * @param $data
+     * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    public function respondWithSuccess($data){
+    public function respondWithSuccess($data, $message = "Operation Successful"){
         return $this->respond([
             'code' => $this->getStatusCode(),
+            'message' => $message,
             'data' => $data
         ]);
     }
