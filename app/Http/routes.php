@@ -22,5 +22,7 @@ Route::group(['prefix' => 'api/v1'], function () {
     Route::post('users/reset-password', 'Auth\PasswordController@reset');
     Route::resource('users', 'UserController', ['except' => [
         'create', 'edit', 'destroy'
+    ], 'parameters' => [
+        'users' => 'user'
     ]]);
 });
