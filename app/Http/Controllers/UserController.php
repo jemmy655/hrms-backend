@@ -48,12 +48,12 @@ class UserController extends HrmsController
      * @param null $paginator
      * @return array
      */
-    private function transform($type, $data, $paginator=null) {
+    private function transform($type, $transformer, $data, $paginator=null) {
 
         if ($type == "Item"){
-            $resource = new Item($data, $this->userTransformer);
+            $resource = new Item($data, $transformer);
         } elseif ($type == "Collection"){
-            $resource = new Collection($data, $this->userTransformer);
+            $resource = new Collection($data, $transformer);
             $resource->setPaginator(new IlluminatePaginatorAdapter($paginator));
         }
 
@@ -74,10 +74,11 @@ class UserController extends HrmsController
     {
         $this->perPage = empty($request->all()) ? $this->perPage : $request->get('per-page');
         $paginator = User::paginate($this->perPage);
+
         $users = $paginator->getCollection();
 
         $paginator->appends(array_diff_key($request->all(), array_flip(['page'])));
-        $data = $this->transform("Collection", $users, $paginator);
+        $data = $this->transform("Collection", $this->userTransformer, $users, $paginator);
 
         return $this->respondWithSuccess($data);
     }
@@ -108,7 +109,7 @@ class UserController extends HrmsController
                 'password' => bcrypt($request->get('password')),
             ]);
 
-            $data = $this->transform("Item", $user);
+            $data = $this->transform("Item", $this->userTransformer, $user);
 
             return $this->respondWithSuccess($data, "User created successfully.");
         }
@@ -129,7 +130,7 @@ class UserController extends HrmsController
             return $this->setStatusCode(404)->respondWithError(['User does not Exist']);
         }
 
-        $data = $this->transform("Item", $user);
+        $data = $this->transform("Item", $this->userTransformer, $user);
 
         return $this->respondWithSuccess($data);
     }
