@@ -54,6 +54,11 @@ class EntrustSetupTables extends Migration
 
             $table->primary(['permission_id', 'role_id']);
         });
+
+        Artisan::call( 'db:seed', [
+            '--class' => 'DefaultUserAndUserControllerPermissionsSeeder',
+            '--force' => true
+        ]);
     }
 
     /**
