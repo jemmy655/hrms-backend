@@ -37,9 +37,7 @@ class UserController extends HrmsController
         $this->userTransformer = $userTransformer;
         $this->fractal = $fractal;
         $this->perPage = 20;
-        $this->middleware('jwt.auth', ['except' => [
-            'authenticate'
-        ]]);
+        $this->middleware('jwt.auth', ['except' => ['authenticate']]);
     }
 
     /**
