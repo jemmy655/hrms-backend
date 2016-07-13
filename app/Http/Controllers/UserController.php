@@ -38,6 +38,10 @@ class UserController extends HrmsController
         $this->fractal = $fractal;
         $this->perPage = 20;
         $this->middleware('jwt.auth', ['except' => ['authenticate']]);
+        $this->middleware('permission:list-users', ['only' => ['index']]);
+        $this->middleware('permission:create-users', ['only' => ['store']]);
+        $this->middleware('permission:view-user', ['only' => ['show']]);
+        $this->middleware('permission:update-users', ['only' => ['update']]);
     }
 
     /**
