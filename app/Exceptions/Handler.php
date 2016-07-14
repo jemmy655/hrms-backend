@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Traits\ResponseHandlerTrait;
 use Exception;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -11,6 +12,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
+    use ResponseHandlerTrait;
     /**
      * A list of the exception types that should not be reported.
      *
@@ -45,6 +47,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        return parent::render($request, $e);
+        return $this->getJsonResponseForException($request, $e);
     }
 }

@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Transformers\UserTransformer;
 use App\User;
 use Illuminate\Http\Request;
-
-use App\Http\Requests;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
@@ -126,8 +124,9 @@ class UserController extends HrmsController
      * @internal param App\User|User $users
      * @internal param int $id
      */
-    public function show(User $user)
+    public function show($user)
     {
+        $user = User::findOrFail($user);
         if ( ! $user ) {
             return $this->setStatusCode(404)->respondWithError(['User does not Exist']);
         }
@@ -145,7 +144,7 @@ class UserController extends HrmsController
      * @return \Illuminate\Http\Response
      * @internal param int $id
      */
-    public function update(Request $request, User $user)
+    public function update(Request $request, $user)
     {
         //
     }
