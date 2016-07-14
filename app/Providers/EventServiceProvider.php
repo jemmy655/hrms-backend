@@ -2,11 +2,14 @@
 
 namespace App\Providers;
 
+use App\Traits\ResponseHandlerTrait;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
+    use ResponseHandlerTrait;
+
     /**
      * The event listener mappings for the application.
      *
@@ -30,19 +33,13 @@ class EventServiceProvider extends ServiceProvider
 
         $events->listen('tymon.jwt.absent', function () {
 
-            return response()->json([
-                'code' => 400,
-                'error' => "Please supply user token."
-            ], 400);
+            return $this->setStatusCode(400)->respondWithError(["Please supply user token."], "Token Absent");
 
         });
 
         $events->listen('tymon.jwt.invalid', function () {
 
-            return response()->json([
-                'code' => 400,
-                'error' => "The supplied token is invalid. Please supply a correct Token."
-            ], 400);
+            return $this->setStatusCode(400)->respondWithError(["The supplied token is invalid. Please supply a correct Token."], "Invalid Token");
 
         });
     }

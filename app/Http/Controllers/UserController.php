@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Transformers\UserTransformer;
 use App\User;
 use Illuminate\Http\Request;
-
-use App\Http\Requests;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
