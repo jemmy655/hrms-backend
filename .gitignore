@@ -8,3 +8,4 @@ Homestead.json
 .gitattributes
 .idea
 .vagrant/machines/default/virtualbox
+/tests/coverage
